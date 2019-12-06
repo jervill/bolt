@@ -40,6 +40,19 @@ module.exports = () => {
         )
       }
 
+      // modal view_submission support:
+      // Map the following view properties (if they exist) to these msg.body poperties
+      //   view.state.values to action.[selected_options]
+      //   view.type to type
+      //   view.callback_id to callback_id
+      if (body.type === 'view_submission') {
+        body.actions = [Object.assign({},
+          body.view.state && body.view.state.values && { selected_options: [body.view.state.values] }
+        )]
+        body.type = body.view.type
+        body.callback_id = body.view.callback_id
+      }
+
       req.slapp = {
         type: 'action',
         body: body,
@@ -48,7 +61,8 @@ module.exports = () => {
           signature: (req.headers || {})['x-slack-signature'],
           timestamp: (req.headers || {})['x-slack-request-timestamp'],
           user_id: body.user.id,
-          channel_id: body.channel.id,
+          // View and Modal interactions may not have a channel.
+          channel_id: body.channel && body.channel.id,
           team_id: body.team.id
         }
       }

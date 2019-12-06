@@ -109,6 +109,25 @@ test.cb('ParseAction() block_actions valid payload', t => {
   })
 })
 
+test.cb('ParseAction() view_submission valid payload', t => {
+  t.plan(5)
+  let mw = ParseAction().pop()
+
+  let payload = mockViewPayload()
+  let req = { body: { payload: JSON.stringify(payload) } }
+  let res = fixtures.getMockRes()
+
+  mw(req, res, () => {
+    let slapp = req.slapp
+    t.is(slapp.body.type, 'modal')
+    t.deepEqual(slapp.body.actions[0].selected_options[0], payload.view.state.values)
+    t.is(slapp.body.callback_id, 'modal-with-inputs')
+    t.is(slapp.response, res)
+    t.is(slapp.responseTimeout, 2500)
+    t.end()
+  })
+})
+
 function mockPayload () {
   return {
     token: 'token',
@@ -120,6 +139,41 @@ function mockPayload () {
     },
     team: {
       id: 'team_id'
+    }
+  }
+}
+
+function mockViewPayload () {
+  return {
+    type: 'view_submission',
+    team: {
+      id: 'team_id'
+    },
+    user: {
+      id: 'user_id'
+    },
+    view: {
+      id: 'VNHU13V36',
+      type: 'modal',
+      title: {
+        type: 'plain_text',
+        text: 'Modal Menu'
+      },
+      blocks: [],
+      private_metadata: 'shhh-its-secret',
+      callback_id: 'modal-with-inputs',
+      state: {
+        values: {
+          'multi-line': {
+            'ml-value': {
+              type: 'plain_text_input',
+              value: 'This is my example inputted value'
+            }
+          }
+        }
+      },
+      hash: '156663117.cd33ad1f',
+      external_id: 'external_id'
     }
   }
 }
