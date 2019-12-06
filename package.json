@@ -1,7 +1,7 @@
 {
-  "name": "slapp",
-  "version": "3.3.0",
-  "description": "A module for Slack App integrations",
+  "name": "patchy-slapp",
+  "version": "1.0.0",
+  "description": "Fork of slapp from before it became bolt, with some blockkit support.",
   "main": "src/index.js",
   "scripts": {
     "test": "npm run lint && npm run coverage",
@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/missionsai/slapp.git"
+    "url": "git+https://github.com/jervill/patchy-slapp.git"
   },
   "keywords": [
     "slack",
@@ -24,9 +24,9 @@
   "author": "Mike Brevoort",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/missionsai/slapp/issues"
+    "url": "https://github.com/jervill/patchy-slapp/issues"
   },
-  "homepage": "https://github.com/missionsai/slapp#readme",
+  "homepage": "https://github.com/jervill/patchy-slapp#readme",
   "engines": {
     "node": ">=6.0.0"
   },
