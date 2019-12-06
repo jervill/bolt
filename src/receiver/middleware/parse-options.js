@@ -19,6 +19,18 @@ module.exports = () => {
         return next(new Error('Error parsing payload'))
       }
 
+      // block_suggestions support:
+      // Map the following blockkit body properties (if they exist) to these msg.body poperties
+      //   action_id to name
+      //   block_id to callback_id
+      if (body.type === 'block_suggestion') {
+        body = Object.assign({},
+          body,
+          body.action_id && { name: body.action_id },
+          body.block_id && { callback_id: body.block_id }
+        )
+      }
+
       req.slapp = {
         type: 'options',
         body: body,

@@ -61,6 +61,37 @@ test.cb('ParseOptions() with payload', t => {
   })
 })
 
+test.cb('ParseOptions() with block_suggestions payload', t => {
+  let mw = ParseOptions().pop()
+  let payload = mockPayload()
+  payload.type = 'block_suggestion'
+  payload.action_id = 'actionId'
+  payload.block_id = 'blockId'
+  let req = {
+    body: { payload: JSON.stringify(payload) },
+    headers: fixtures.getMockSlackHeaders(SIGNATURE, TIMESTAMP)
+  }
+  let res = fixtures.getMockRes()
+
+  mw(req, res, (err) => {
+    t.ifError(err)
+    let slapp = req.slapp
+
+    t.is(slapp.body.type, 'block_suggestion')
+    t.is(slapp.body.name, 'actionId')
+    t.is(slapp.body.callback_id, 'blockId')
+    t.is(slapp.meta.verify_token, payload.token)
+    t.is(slapp.meta.user_id, payload.user.id)
+    t.is(slapp.meta.channel_id, payload.channel.id)
+    t.is(slapp.meta.team_id, payload.team.id)
+    t.is(slapp.meta.signature, SIGNATURE)
+    t.is(slapp.meta.timestamp, TIMESTAMP)
+    t.is(slapp.response, res)
+    t.is(slapp.responseTimeout, 3000)
+    t.end()
+  })
+})
+
 function mockPayload () {
   return {
     name: 'name',
