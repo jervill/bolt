@@ -67,8 +67,8 @@ module.exports = () => {
         }
       }
 
-      // message_action & block_actions= do not support returning a message in the HTTP response
-      if (!['message_action', 'block_actions'].includes(body.type)) {
+      // message_action do not support returning a message in the HTTP response
+      if (!['message_action'].includes(body.type)) {
         // May be responded to directly within 3000ms
         req.slapp.response = res
         req.slapp.responseTimeout = 2500

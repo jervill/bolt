@@ -1,6 +1,6 @@
 {
   "name": "hacky-slapp",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Fork of slapp from before it became bolt, with some blockkit support.",
   "main": "src/index.js",
   "scripts": {
