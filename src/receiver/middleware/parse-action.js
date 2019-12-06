@@ -20,6 +20,26 @@ module.exports = () => {
         return res.send('Error parsing payload')
       }
 
+      // block_actions support:
+      // Map the following blockkit body properties (if they exist) to these msg.body poperties
+      //   action.action_id to action.name
+      //   action.selected_option to action.[selected_option]
+      //   action[0].callback_id to callback_id
+      if (body.type === 'block_actions' && body.actions) {
+        body.actions = body.actions.map(action => {
+          return Object.assign({},
+            action,
+            action.action_id && { name: action.action_id },
+            action.selected_option && { selected_options: [action.selected_option] }
+          )
+        })
+
+        body = Object.assign({},
+          body,
+          body.actions[0].block_id && { callback_id: body.actions[0].block_id }
+        )
+      }
+
       req.slapp = {
         type: 'action',
         body: body,
@@ -33,8 +53,8 @@ module.exports = () => {
         }
       }
 
-      // message_action's do not support returning a message in the HTTP response
-      if (body.type !== 'message_action') {
+      // message_action & block_actions= do not support returning a message in the HTTP response
+      if (!['message_action', 'block_actions'].includes(body.type)) {
         // May be responded to directly within 3000ms
         req.slapp.response = res
         req.slapp.responseTimeout = 2500

@@ -81,6 +81,34 @@ test.cb('ParseAction() message_action valid payload', t => {
   })
 })
 
+test.cb('ParseAction() block_actions valid payload', t => {
+  t.plan(5)
+  let mw = ParseAction().pop()
+
+  let payload = mockPayload()
+  payload.type = 'block_actions'
+  payload.actions = [
+    {
+      action_id: 'actionId',
+      block_id: 'blockId',
+      value: 'submit'
+    }
+  ]
+
+  let req = { body: { payload: JSON.stringify(payload) } }
+  let res = fixtures.getMockRes()
+
+  mw(req, res, () => {
+    let slapp = req.slapp
+    t.is(slapp.body.type, 'block_actions')
+    t.is(slapp.body.actions[0].value, 'submit')
+    t.is(slapp.body.actions[0].name, 'actionId')
+    t.is(slapp.body.callback_id, 'blockId')
+    t.falsy(slapp.response, 'response should be undefined if block_actions')
+    t.end()
+  })
+})
+
 function mockPayload () {
   return {
     token: 'token',
